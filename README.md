@@ -1,7 +1,7 @@
 # 🚀 ChatWithRepo
 
 ChatWithRepo is an AI-powered RAG (Retrieval-Augmented Generation) system that allows users to **chat with any GitHub repository**.  
-Just paste a repo link and ask questions — the system understands the codebase and responds intelligently.
+Just paste a repo link and ask questions, the system understands the codebase and responds intelligently.
 
 ---
 
