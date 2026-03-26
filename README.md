@@ -23,19 +23,33 @@ Just paste a repo link and ask questions — the system understands the codebase
 ## 🏗️ Architecture
 
 User (Streamlit UI)
+
         ↓
+        
 FastAPI Backend
+
         ↓
+        
 Repo Loader (clone + parse files)
+
         ↓
+        
 Text Chunking + Embeddings
+
         ↓
+        
 ChromaDB (Vector DB)
+
         ↓
+        
 Retriever (Top relevant chunks)
+
         ↓
+        
 Groq LLM (Answer generation)
+
         ↓
+        
 Response to User
 
 
