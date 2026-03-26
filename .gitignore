@@ -4,5 +4,4 @@ __pycache__/
 chroma_db/
 *.db
 *.sqlite3
-data/repos/
-.ipynb_checkpoints/
+backend/data/repos/
