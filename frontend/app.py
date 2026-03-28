@@ -5,18 +5,17 @@ BACKEND = "http://localhost:8000"
 
 st.set_page_config(page_title="ChatWithRepo", page_icon="🤖", layout="wide")
 
-# Initialize session state variables
 if "current_repo_id" not in st.session_state:
     st.session_state.current_repo_id = None
 if "current_repo_url" not in st.session_state:
     st.session_state.current_repo_url = None
 if "sessions" not in st.session_state:
-    st.session_state.sessions = []  # Stores loaded repos: {"id": "...", "url": "..."}
+    st.session_state.sessions = []  
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 def load_history(repo_id):
-    """Fetch past chat history from the backend DB for the selected repo."""
+    
     try:
         res = requests.get(f"{BACKEND}/history/{repo_id}")
         if res.status_code == 200:
@@ -31,9 +30,8 @@ def load_history(repo_id):
     except Exception:
         st.session_state.messages = []
 
-# --- SIDEBAR ---
 with st.sidebar:
-    # New Chat Button
+   
     if st.button("➕ New Chat", use_container_width=True):
         st.session_state.current_repo_id = None
         st.session_state.current_repo_url = None
@@ -46,9 +44,9 @@ with st.sidebar:
     if not st.session_state.sessions:
         st.caption("No recent chats.")
     else:
-        # Display history buttons (newest at the top)
+        
         for session in reversed(st.session_state.sessions):
-            # Show just the repository name instead of the full URL
+            
             repo_name = session["url"].split("/")[-1] if "/" in session["url"] else session["url"]
             
             is_active = session["id"] == st.session_state.current_repo_id
@@ -60,9 +58,8 @@ with st.sidebar:
                 load_history(session["id"])
                 st.rerun()
 
-# --- MAIN CHAT AREA ---
 if st.session_state.current_repo_id is None:
-    # "Landing Page" view when no chat is selected (like ChatGPT)
+    
     st.markdown("<h1 style='text-align: center; margin-top: 15vh;'>ChatWithRepo</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #555;'>Enter a GitHub repository URL to start exploring the codebase.</p>", unsafe_allow_html=True)
     
@@ -91,24 +88,23 @@ if st.session_state.current_repo_id is None:
                         st.error(f"Failed to connect: {e}")
 
 else:
-    # "Active Chat" view
+    
     st.caption(f"📚 **Context:** `{st.session_state.current_repo_url}`")
     st.divider()
 
-    # 1. Display chat messages from history
+    
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    # 2. Chat Input Box (pinned to bottom)
     if prompt := st.chat_input("Ask a question about the codebase..."):
         
-        # Display user message instantly
+        
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
 
-        # Generate and display bot response
+        
         with st.chat_message("assistant"):
             message_placeholder = st.empty()
             with st.spinner("Analyzing code..."):

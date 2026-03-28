@@ -12,15 +12,12 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 chroma_client = chromadb.PersistentClient(path="chroma_db")
 
 def on_rm_error(func, path, exc_info):
-    """
-    Error handler for shutil.rmtree to overcome read-only file permissions on Windows.
-    This changes the file permission to writable and retries the deletion.
-    """
+    
     os.chmod(path, stat.S_IWRITE)
     func(path)
 
 def process_ipynb(filepath):
-    """Extract code and markdown content from a Jupyter Notebook, ignoring metadata/outputs."""
+    
     try:
         with open(filepath, "r", encoding="utf-8") as f:
             notebook = json.load(f)
@@ -54,13 +51,13 @@ def load_repo(repo_url):
         for file in files:
             filepath = os.path.join(root, file)
             
-            # 1. Parse .ipynb files specifically to avoid raw JSON clutter
+            
             if file.endswith(".ipynb"):
                 content = process_ipynb(filepath)
                 if content.strip():
                     documents.append(f"File: {file}\n{content}")
             
-            # 2. Try to read any other file as a normal text file
+            
             else:
                 try:
                     with open(filepath, "r", encoding="utf-8") as f:
@@ -68,11 +65,10 @@ def load_repo(repo_url):
                         if content.strip():
                             documents.append(f"File: {file}\n{content}")
                 except UnicodeDecodeError:
-                    # If it's a binary file (like .png, .exe, .zip), reading as text fails.
-                    # We simply ignore it and move on.
+                    
                     pass
 
-    # If no files were successfully read, clean up and raise an error
+    
     if not documents:
         shutil.rmtree(repo_path, onerror=on_rm_error)
         raise ValueError("No valid readable text or code files found in the repository.")
@@ -94,7 +90,7 @@ def load_repo(repo_url):
         ids=ids
     )
 
-    # Clean up the cloned repo safely using the Windows permission error handler
+    
     shutil.rmtree(repo_path, onerror=on_rm_error)
 
     return repo_id
